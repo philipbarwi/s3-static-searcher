@@ -1,0 +1,81 @@
+<html>
+<head>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+<!-- Search Bar -->
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Vulnsearch</a>
+            <form class="d-flex">
+                <input id="searchbar" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+</div>
+<!-- Results -->
+<div id="results" class="container">
+<!-- Search Logic will insert the items here -->
+</div>
+
+<!-- Search Logic -->
+<script>
+function Get(yourUrl){
+    var Httpreq = new XMLHttpRequest(); // a new request
+    Httpreq.open("GET",yourUrl,false);
+    Httpreq.send(null);
+    return Httpreq.responseText;
+}
+
+function AddVuln(vulnobj){
+    console.log(vulnobj);
+    const newDiv = document.createElement("div");
+
+    // and give it some content
+    const title = document.createTextNode('Title: ' + vulnobj.Title);
+    const description = document.createTextNode('Description: ' + vulnobj.Description);
+    newDiv.appendChild(title);
+    newDiv.appendChild(document.createElement("br"));
+    newDiv.appendChild(description);
+    newDiv.appendChild(document.createElement("br"));
+    newDiv.appendChild(document.createElement("br"));
+
+    results.appendChild(newDiv);
+}
+
+var url = 'http://localhost:63342/catalogue.json'
+const obj = JSON.parse(Get(url));
+const source = document.getElementById('searchbar');
+const results = document.getElementById('results');
+for (const vuln in obj) {
+    AddVuln(obj[vuln]);
+}
+
+const inputHandler = function(e) {
+    results.innerHTML = '';
+    for (const vuln in obj) {
+        if (obj[vuln].Title.toLowerCase().includes(e.target.value.toLowerCase())){
+            AddVuln(obj[vuln]);
+        }
+    }
+
+    console.log(e.target.value);
+}
+
+source.addEventListener('input', inputHandler);
+</script>
+
+
+
+</body>
+
+</html>
